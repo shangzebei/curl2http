@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CurlToRequest(args string) (*http.Request, error) {
+func CurlToRequest(argStr string) (*http.Request, error) {
 	var (
 		url     string
 		request string
@@ -30,12 +30,12 @@ func CurlToRequest(args string) (*http.Request, error) {
 	rootCmd.Flags().Bool("location", true, "Follow redirects")
 	rootCmd.Flags().Bool("compressed", true, "Follow redirects")
 
-	spArgs := strings.ReplaceAll(args, "\\\n\t", "")
+	spArgs := strings.ReplaceAll(argStr, "\\\n\t", "")
 	spArgs = strings.ReplaceAll(spArgs, "\\\n", "")
 
 	argsList := parseArgs(spArgs)
 
-	if strings.HasPrefix(args, "curl") {
+	if strings.HasPrefix(argStr, "curl") {
 		rootCmd.SetArgs(argsList[1:])
 	} else {
 		rootCmd.SetArgs(argsList)
@@ -77,7 +77,7 @@ func parseArgs(argStr string) []string {
 				stack = append(stack, pos)
 			}
 			temp += string(pos)
-		} else if pos == ' ' && len(stack) == 0 {
+		} else if pos == ' ' && len(stack) == 0 && temp != "" {
 			parsedArgs = append(parsedArgs, unq(temp))
 			temp = ""
 		} else {
